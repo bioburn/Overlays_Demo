@@ -1,6 +1,7 @@
 package com.example.overlaytest;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Layout;
@@ -107,6 +109,13 @@ public class OverlayService extends Service {
         //the speed
         anim.setDuration(2000);
 
+        RotateAnimation counterClockwise = new RotateAnimation(0.0f, -360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        counterClockwise.setInterpolator(new LinearInterpolator());
+        //how many times it rotates
+        counterClockwise.setRepeatCount(Animation.ABSOLUTE);
+        //the speed
+        counterClockwise.setDuration(2000);
+
 
 
 
@@ -115,13 +124,13 @@ public class OverlayService extends Service {
         overlayedButton.startAnimation(anim);
 
         WindowManager.LayoutParams params3 = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
                 0,
 //              WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 //                      | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                PixelFormat.TRANSPARENT);
+                PixelFormat.TRANSLUCENT);
 
 
 
@@ -134,8 +143,15 @@ public class OverlayService extends Service {
 
         SpinningImage = floating_layout.findViewById(R.id.imageView2);
 
-        wm.addView(floating_layout,params);
-        SpinningImage.startAnimation(anim);
+        final ImageView topleft = floating_layout.findViewById(R.id.topLeft);
+
+        final ImageView bottomLeft = floating_layout.findViewById(R.id.bottomLeft);
+
+        final ImageView bottomRight = floating_layout.findViewById(R.id.bottomRight);
+
+
+        wm.addView(floating_layout,params3);
+        //SpinningImage.startAnimation(anim);
 
 
 
@@ -155,6 +171,9 @@ public class OverlayService extends Service {
 
             public void onAnimationEnd(Animation animation) {
                 SpinningImage.setVisibility(View.GONE);
+                topleft.setVisibility(View.GONE);
+                bottomLeft.setVisibility(View.GONE);
+                bottomRight.setVisibility(View.GONE);
 
             }
         });
@@ -168,7 +187,18 @@ public class OverlayService extends Service {
         s.addAnimation(anim);
         s.addAnimation(a);
 
-        SpinningImage.startAnimation(s);
+        AnimationSet counterClockAnim = new AnimationSet(false);
+        counterClockAnim.addAnimation(b);
+        counterClockAnim.addAnimation(counterClockwise);
+        counterClockAnim.addAnimation(a);
+
+
+
+
+        SpinningImage.startAnimation(counterClockAnim);
+        topleft.startAnimation(s);
+        bottomLeft.startAnimation(s);
+        bottomRight.startAnimation(counterClockAnim);
 
         myImage.startAnimation(anim);
         overlayedButton.startAnimation(anim);
