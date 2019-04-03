@@ -102,19 +102,19 @@ public class OverlayService extends Service {
         myImage.setMaxWidth(100);
         myImage.setMaxHeight(100);
 
-        RotateAnimation anim = new RotateAnimation(0.0f, 360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        RotateAnimation anim = new RotateAnimation(270f, 360.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1f);
         anim.setInterpolator(new LinearInterpolator());
         //how many times it rotates
         anim.setRepeatCount(Animation.ABSOLUTE);
         //the speed
-        anim.setDuration(2000);
+        anim.setDuration(1000);
 
-        RotateAnimation counterClockwise = new RotateAnimation(0.0f, -360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        RotateAnimation counterClockwise = new RotateAnimation(-270f, -360.0f, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 1f);
         counterClockwise.setInterpolator(new LinearInterpolator());
         //how many times it rotates
         counterClockwise.setRepeatCount(Animation.ABSOLUTE);
         //the speed
-        counterClockwise.setDuration(2000);
+        counterClockwise.setDuration(1000);
 
 
 
@@ -156,7 +156,8 @@ public class OverlayService extends Service {
 
 
         Animation a = new AlphaAnimation(1.00f, 0.00f);
-        a.setDuration(3000);
+        a.setDuration(1000);
+        a.setStartOffset(1500);
         a.setAnimationListener(new Animation.AnimationListener() {
 
             public void onAnimationStart(Animation animation) {
@@ -182,16 +183,64 @@ public class OverlayService extends Service {
 
         b.setDuration(1000);
 
+        b.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                SpinningImage.setVisibility(View.VISIBLE);
+                topleft.setVisibility(View.VISIBLE);
+                bottomLeft.setVisibility(View.VISIBLE);
+                bottomRight.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
         AnimationSet s = new AnimationSet(false);
         s.addAnimation(b);
         s.addAnimation(anim);
         s.addAnimation(a);
+        //s.addAnimation(counterClockwise);
+
+        Animation ReverseClockwise = new RotateAnimation(0, -90.0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 1f);
+        ReverseClockwise.setInterpolator(new LinearInterpolator());
+        //how many times it rotates
+        ReverseClockwise.setRepeatCount(Animation.ABSOLUTE);
+        //the speed
+        ReverseClockwise.setDuration(1000);
+
+        ReverseClockwise.setStartOffset(1500);
+
+        s.addAnimation(ReverseClockwise);
+
 
         AnimationSet counterClockAnim = new AnimationSet(false);
         counterClockAnim.addAnimation(b);
         counterClockAnim.addAnimation(counterClockwise);
         counterClockAnim.addAnimation(a);
 
+
+        //AnimatorSet animatorSet = new AnimatorSet();
+        //animatorSet.playSequentially();
+
+
+        Animation ReverseCounterClockwise = new RotateAnimation(0, 90.0f, Animation.RELATIVE_TO_SELF, 1f, Animation.RELATIVE_TO_SELF, 1f);
+        ReverseCounterClockwise.setInterpolator(new LinearInterpolator());
+        //how many times it rotates
+        ReverseCounterClockwise.setRepeatCount(Animation.ABSOLUTE);
+        //the speed
+        ReverseCounterClockwise.setDuration(1000);
+
+        ReverseCounterClockwise.setStartOffset(1500);
+
+        counterClockAnim.addAnimation(ReverseCounterClockwise);
 
 
 
