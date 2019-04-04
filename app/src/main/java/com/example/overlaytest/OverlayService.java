@@ -272,6 +272,7 @@ public class OverlayService extends Service {
 
         myImage.startAnimation(anim);
         overlayedButton.startAnimation(anim);
+        overlayedButton.setVisibility(View.GONE);
 
     }
 
