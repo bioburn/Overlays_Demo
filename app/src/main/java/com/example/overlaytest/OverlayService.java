@@ -3,8 +3,10 @@ package com.example.overlaytest;
 import android.Manifest;
 import android.animation.AnimatorSet;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,8 +35,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import static android.content.Intent.ACTION_SCREEN_ON;
+
 public class OverlayService extends Service {
 
+
+    final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startAnimation();
+        }
+    };
 
     Button overlayedButton;
 
@@ -61,10 +72,20 @@ public class OverlayService extends Service {
     public void onCreate() {
         super.onCreate();
 
-
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_SCREEN_ON);
+        //This requires <action android:name="android.provider.Telephony.SMS_RECEIVED" /> in the intent filter tag inside a receiver
+        //filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(receiver,filter);
 
         Toast.makeText(getBaseContext(),"onCreate", Toast.LENGTH_LONG).show();
 
+
+        Log.d("onCreate", "end");
+    }
+
+    public void startAnimation()
+    {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -252,7 +273,6 @@ public class OverlayService extends Service {
         myImage.startAnimation(anim);
         overlayedButton.startAnimation(anim);
 
-        Log.d("onCreate", "end");
     }
 
     @Override
@@ -280,7 +300,7 @@ public class OverlayService extends Service {
         }
 
 
-
+        unregisterReceiver(receiver);
 
     }
 
